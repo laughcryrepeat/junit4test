@@ -1,6 +1,7 @@
 package iloveyouboss;
 
 public abstract class Question {
+
   private String text;
   private String[] answerChoices;
   private int id;
@@ -9,6 +10,10 @@ public abstract class Question {
     this.id = id;
     this.text = text;
     this.answerChoices = answerChoices;
+  }
+
+  public int getId() {
+    return id;
   }
 
   public String getText() {
@@ -26,9 +31,11 @@ public abstract class Question {
   abstract public boolean match(int expected, int actual);
 
   public int indexOf(String matchingAnswerChoice) {
-    for (int i = 0; i < answerChoices.length; i++)
-      if (answerChoices[i].equals(matchingAnswerChoice))
+    for (int i = 0; i < answerChoices.length; i++) {
+      if (answerChoices[i].equals(matchingAnswerChoice)) {
         return i;
+      }
+    }
     return -1;
   }
 }

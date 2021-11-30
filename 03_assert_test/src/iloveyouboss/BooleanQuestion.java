@@ -1,6 +1,7 @@
 package iloveyouboss;
 
 public class BooleanQuestion extends Question {
+
   public BooleanQuestion(int id, String text) {
     super(id, text, new String[]{"No", "Yes"});
   }

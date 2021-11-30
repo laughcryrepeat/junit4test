@@ -1,6 +1,7 @@
 package iloveyouboss;
 
 public class Answer {
+
   private int i;
   private Question question;
 
@@ -9,9 +10,9 @@ public class Answer {
     this.i = i;
   }
 
-  public Answer(Question characteristic, String matchingValue) {
-    this.question = characteristic;
-    this.i = characteristic.indexOf(matchingValue);
+  public Answer(Question question, String matchingValue) {
+    this.question = question;
+    this.i = question.indexOf(matchingValue);
   }
 
   public String getQuestionText() {
@@ -31,7 +32,7 @@ public class Answer {
     return question.match(i, otherAnswer.i);
   }
 
-  public Question getCharacteristic() {
+  public Question getQuestion() {
     return question;
   }
 }

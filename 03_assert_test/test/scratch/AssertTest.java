@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+
 import java.io.*;
 import java.util.*;
 import org.junit.*;
@@ -12,6 +13,7 @@ import org.junit.rules.*;
 public class AssertTest {
 
   class InsufficientFundsException extends RuntimeException {
+
     public InsufficientFundsException(String message) {
       super(message);
     }
@@ -20,6 +22,7 @@ public class AssertTest {
   }
 
   class Account {
+
     int balance;
     String name;
 
@@ -32,7 +35,7 @@ public class AssertTest {
     }
 
     void withdraw(int dollars) {
-      if(balance < dollars) {
+      if (balance < dollars) {
         throw new InsufficientFundsException("balance only " + balance);
       }
       balance -= dollars;
@@ -52,6 +55,7 @@ public class AssertTest {
   }
 
   class Customer {
+
     List<Account> accounts = new ArrayList<>();
 
     void add(Account account) {
@@ -93,7 +97,7 @@ public class AssertTest {
   //@ExpectToFail
   @Test
   public void comparesArraysFailing() {
-    assertThat(new String[] {"a", "b", "c"}, equalTo(new String[] {"a", "b"}));
+    assertThat(new String[]{"a", "b", "c"}, equalTo(new String[]{"a", "b"}));
   }
 
   @Test
@@ -101,5 +105,63 @@ public class AssertTest {
   @Ignore
   public void matchesFailure() {
     assertThat(account.getName(), startsWith("xyz"));
+  }
+
+  @Test
+  public void comparesArraysPassing() {
+    assertThat(new String[]{"a", "b"}, equalTo(new String[]{"a", "b"}));
+  }
+
+  @Test
+  public void comparesCollectionsPassing() {
+    assertThat(Arrays.asList(new String[]{"a"}),
+        equalTo(Arrays.asList(new String[]{"a"})));
+  }
+
+  @Test
+  public void variousMatcherTests() {
+    Account account = new Account("my big fat acct");
+    assertThat(account.getName(), is(equalTo("my big fat acct")));
+
+    assertThat(account.getName(), not(equalTo("plunderings")));
+
+    assertThat(account.getName(), is(notNullValue())); // not helpful
+    assertThat(account.getName(), equalTo("my big fat acct"));
+  }
+
+  @Test
+  @Ignore
+  public void testWithWorthlessAssertionComment() {
+    account.deposit(50);
+    assertThat("account balance is 100", account.getBalance(), equalTo(50));
+    // 주석문 보다는 테스트 메소드 이름을 이해할 수 있게 작성해야함.
+  }
+
+  @Test(expected = InsufficientFundsException.class)
+  public void throwsWhenWithdrawingTooMuch() {
+    account.withdraw(100);
+    // 예외가 발생하면 테스트 통과, 그렇지 않으면 실패.
+  }
+
+  @Test
+  public void throwsWhenWithdrawingTooMuchTry() {
+    try {
+      account.withdraw(100);
+      fail();
+    }
+    catch (InsufficientFundsException expected) {
+      assertThat(expected.getMessage(), equalTo("balance only 0"));
+    }
+  }
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
+  @Test
+  public void exceptionRule() {
+    thrown.expect(InsufficientFundsException.class);
+    thrown.expectMessage("balance only 0");
+
+    account.withdraw(100);
   }
 }
